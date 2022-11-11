@@ -18,11 +18,9 @@ class LoginPresenter extends Cubit<LoginViewModel> {
   // ignore: unused_element
   LoginPresentationModel get _model => state as LoginPresentationModel;
 
-  void updateUsername(String username) =>
-      emit(_model.copyWith(username: username));
+  void updateUsername(String username) => emit(_model.copyWith(username: username));
 
-  void updatePassword(String password) =>
-      emit(_model.copyWith(password: password));
+  void updatePassword(String password) => emit(_model.copyWith(password: password));
 
   Future<void> login() async {
     await logInUseCase
@@ -35,6 +33,7 @@ class LoginPresenter extends Cubit<LoginViewModel> {
         )
         .asyncFold<void>(
           (failure) => navigator.showError(failure.displayableFailure()),
+          //TODO:: localize strings used in a success alert
           (user) => navigator.showAlert(
             title: 'Amazing',
             message: 'enjoy using our services as ${user.username}',

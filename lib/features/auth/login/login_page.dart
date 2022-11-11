@@ -19,8 +19,7 @@ class LoginPage extends StatefulWidget with HasPresenter<LoginPresenter> {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage>
-    with PresenterStateMixin<LoginViewModel, LoginPresenter, LoginPage> {
+class _LoginPageState extends State<LoginPage> with PresenterStateMixin<LoginViewModel, LoginPresenter, LoginPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Padding(
@@ -32,8 +31,7 @@ class _LoginPageState extends State<LoginPage>
                 decoration: InputDecoration(
                   hintText: appLocalizations.usernameHint,
                 ),
-                //onChanged call is popular, that no need to write its full signature
-                onChanged: presenter.updateUsername,
+                onChanged: (username) => presenter.updateUsername(username),
               ),
               const SizedBox(height: 8),
               TextField(
@@ -41,7 +39,7 @@ class _LoginPageState extends State<LoginPage>
                 decoration: InputDecoration(
                   hintText: appLocalizations.passwordHint,
                 ),
-                onChanged: presenter.updatePassword,
+                onChanged: (password) => presenter.updatePassword(password),
               ),
               const SizedBox(height: 16),
               stateObserver(
@@ -50,8 +48,11 @@ class _LoginPageState extends State<LoginPage>
                     ? const CircularProgressIndicator()
                     : ElevatedButton(
                         //disable the button if conditions aren't satisfied by passing null as a callback
-                        onPressed: () =>
-                            state.isLoginEnabled ? presenter.login() : null,
+                        onPressed: () => state.isLoginEnabled ? presenter.login() : null,
+                        //add some style to make it visually easier to test
+                        style: ElevatedButton.styleFrom(
+                          primary: state.isLoginEnabled ? Colors.blue : Colors.grey,
+                        ),
                         child: Text(appLocalizations.logInAction),
                       ),
               ),
