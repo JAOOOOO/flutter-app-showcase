@@ -1,7 +1,6 @@
 // ignore: unused_import
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_demo/core/helpers.dart';
 import 'package:flutter_demo/core/utils/mvp_extensions.dart';
 import 'package:flutter_demo/features/auth/login/login_presentation_model.dart';
 import 'package:flutter_demo/features/auth/login/login_presenter.dart';
@@ -32,7 +31,7 @@ class _LoginPageState extends State<LoginPage> with PresenterStateMixin<LoginVie
                 decoration: InputDecoration(
                   hintText: appLocalizations.usernameHint,
                 ),
-                onChanged: (text) => doNothing(), //TODO
+                onChanged: (username) => presenter.updateUsername(username),
               ),
               const SizedBox(height: 8),
               TextField(
@@ -40,14 +39,22 @@ class _LoginPageState extends State<LoginPage> with PresenterStateMixin<LoginVie
                 decoration: InputDecoration(
                   hintText: appLocalizations.passwordHint,
                 ),
-                onChanged: (text) => doNothing(), //TODO
+                onChanged: (password) => presenter.updatePassword(password),
               ),
               const SizedBox(height: 16),
               stateObserver(
-                builder: (context, state) => ElevatedButton(
-                  onPressed: () => doNothing(), //TODO
-                  child: Text(appLocalizations.logInAction),
-                ),
+                //show CircularProgressIndicator instead of loading button while signing in
+                builder: (context, state) => state.isLoading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        //disable the button if conditions aren't satisfied by passing null as a callback
+                        onPressed: () => state.isLoginEnabled ? presenter.login() : null,
+                        //add some style to make it visually easier to test
+                        style: ElevatedButton.styleFrom(
+                          primary: state.isLoginEnabled ? Colors.blue : Colors.grey,
+                        ),
+                        child: Text(appLocalizations.logInAction),
+                      ),
               ),
             ],
           ),
